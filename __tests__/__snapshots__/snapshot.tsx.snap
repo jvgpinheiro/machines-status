@@ -1,0 +1,74 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders homepage unchanged 1`] = `
+<div>
+  <main
+    class="main"
+  >
+    <nav
+      class="navbar"
+      data-testid="navbar-id"
+    >
+      <div
+        class="navbarOption active"
+        data-testid="navbar-home-id"
+      >
+        <span
+          class="navbarText"
+        >
+          Home
+        </span>
+      </div>
+      <div
+        class="navbarOption "
+        data-testid="navbar-assets-id"
+      >
+        <span
+          class="navbarText"
+        >
+          Assets
+        </span>
+      </div>
+      <div
+        class="navbarOption "
+        data-testid="navbar-users-id"
+      >
+        <span
+          class="navbarText"
+        >
+          Users
+        </span>
+      </div>
+      <div
+        class="navbarOption "
+        data-testid="navbar-units-id"
+      >
+        <span
+          class="navbarText"
+        >
+          Units
+        </span>
+      </div>
+      <div
+        class="navbarOption "
+        data-testid="navbar-workOrders-id"
+      >
+        <span
+          class="navbarText"
+        >
+          Work Orders
+        </span>
+      </div>
+    </nav>
+    <div
+      class="body"
+      data-testid="body-id"
+    >
+      <div
+        class="bodyContent"
+        data-testid="body-content-id"
+      />
+    </div>
+  </main>
+</div>
+`;
