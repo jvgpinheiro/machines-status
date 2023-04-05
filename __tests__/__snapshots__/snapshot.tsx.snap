@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`renders homepage unchanged 1`] = `
+exports[`Snapshot renders homepage unchanged 1`] = `
 <div>
   <main
     class="main"
@@ -65,8 +65,8 @@ exports[`renders homepage unchanged 1`] = `
       data-testid="body-id"
     >
       <div
-        class="bodyContent"
-        data-testid="body-content-id"
+        class="loadingContent"
+        data-testid="loading-content-id"
       />
     </div>
   </main>

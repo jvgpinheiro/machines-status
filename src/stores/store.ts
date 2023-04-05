@@ -1,33 +1,72 @@
 import { atom } from "recoil";
 
-export type HealthStatus = { status: string; timestamp: string };
-export type Metrics = {
+export type HealthAssetStatus = { status: string; timestamp: string };
+export type AssetMetrics = {
   lastUptimeAt: string;
   totalCollectsUptime: number;
   totalUptime: number;
 };
-export type Specifications = {
+export type AssetSpecifications = {
   maxTemp?: number | null;
   power?: number | null;
   rpm?: number | null;
 };
+export type AssetStatus = "inAlert" | "inOperation" | "inDowntime";
+
 export type Asset = {
   id: number;
   unitId: number;
   companyId: number;
   assignedUserIds: Array<number>;
-  healthHistory: Array<HealthStatus>;
+  healthHistory: Array<HealthAssetStatus>;
   healthscore: number;
-  metrics: Metrics;
+  metrics: AssetMetrics;
   image: string;
   model: string;
   name: string;
   sensors: Array<string>;
-  specifications: Specifications;
-  status: string;
+  specifications: AssetSpecifications;
+  status: AssetStatus;
 };
 
 export const assetsAtom = atom({
   key: "assets",
   default: [] as Array<Asset>,
+});
+
+export type User = {
+  id: number;
+  companyId: number;
+  unitId: number;
+  name: string;
+  email: string;
+};
+
+export const usersAtom = atom({
+  key: "users",
+  default: [] as Array<User>,
+});
+
+export type WorkOrderTask = { completed: boolean; task: string };
+export type WorkOrderStatus = "to do" | "blocked" | "in progress" | "completed";
+export type WorkOrderPriority =
+  | "lowest"
+  | "low"
+  | "medium"
+  | "high"
+  | "highest";
+export type WorkOrder = {
+  id: number;
+  assetId: number;
+  assignedUserIds: Array<number>;
+  title: string;
+  description: string;
+  checklist: Array<WorkOrderTask>;
+  status: WorkOrderStatus;
+  priority: WorkOrderPriority;
+};
+
+export const workOrdersAtom = atom({
+  key: "workOrders",
+  default: [] as Array<WorkOrder>,
 });

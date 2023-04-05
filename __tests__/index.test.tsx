@@ -2,19 +2,7 @@ import { RecoilRoot } from "recoil";
 import { RenderResult, render, waitFor } from "@testing-library/react";
 import MainApp, { AvailablePages } from "@/components/mainApp/mainApp";
 import styles from "@/components/mainApp/mainApp.module.css";
-
-type MockResponse = { json: () => []; text: () => "" };
-type MockFetch = {
-  resolve: (response: MockResponse) => void;
-  reject: (reason: any) => void;
-};
-
-const fetchCallsToSolve = new Set<MockFetch>();
-function mockFetch(): Promise<MockResponse> {
-  return new Promise((resolve, reject) => {
-    fetchCallsToSolve.add({ resolve, reject });
-  });
-}
+import { mockFetch, solveFetchs } from "../__tests_data__/fetch";
 
 function renderComponent(): RenderResult {
   return render(
@@ -29,7 +17,6 @@ async function testPageSelection(
   option: AvailablePages
 ): Promise<void> {
   const { getByTestId } = context;
-  window.fetch = jest.fn().mockImplementation(() => mockFetch());
 
   const navbarOption = getByTestId(`navbar-${option}-id`);
   getByTestId("body-id");
@@ -39,14 +26,15 @@ async function testPageSelection(
     await waitFor(() => getByTestId("loading-content-id"));
   }
 
-  fetchCallsToSolve.forEach((call) =>
-    call.resolve({ json: () => [], text: () => "" })
-  );
-  fetchCallsToSolve.clear();
+  solveFetchs();
   await waitFor(() => getByTestId("body-content-id"));
 }
 
 describe("Home", () => {
+  beforeEach(() => {
+    window.fetch = jest.fn().mockImplementation(() => mockFetch());
+  });
+
   it("Test navbar", () => {
     const { getByTestId } = renderComponent();
     const navbar = getByTestId("navbar-id");

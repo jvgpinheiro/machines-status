@@ -2,67 +2,81 @@
 import styles from "./mainApp.module.css";
 import { useEffect, useState } from "react";
 import AssetsComponent from "@/components/assets/assets";
+import UsersComponent from "@/components/users/users";
 import { useRecoilState } from "recoil";
-import { Asset, assetsAtom } from "@/stores/store";
+import {
+  Asset,
+  User,
+  WorkOrder,
+  assetsAtom,
+  usersAtom,
+  workOrdersAtom,
+} from "@/stores/store";
 
 export type AvailablePages = keyof SetStatesMap;
 type SetStatesMap = {
-  home: () => void;
-  assets: (value: Array<Asset>) => void;
-  users: () => void;
-  units: () => void;
-  workOrders: () => void;
+  home: { Component: JSX.Element; setList: () => void };
+  assets: { Component: JSX.Element; setList: (value: Array<Asset>) => void };
+  users: { Component: JSX.Element; setList: (value: Array<User>) => void };
+  units: { Component: JSX.Element; setList: () => void };
+  workOrders: {
+    Component: JSX.Element;
+    setList: (value: Array<WorkOrder>) => void;
+  };
 };
 
 export default function MainApp() {
   const [selectedPage, setSelectedPage] = useState<AvailablePages>("home");
   const [isFetching, setFetchingStatus] = useState<boolean>(false);
-  const [fetchData, setFetchData] = useState<any>([]);
-  const [assetsList, setAssetsList] = useRecoilState(assetsAtom);
+  const [, setAssetsList] = useRecoilState(assetsAtom);
+  const [, setUsers] = useRecoilState(usersAtom);
+  const [, setWorkOrders] = useRecoilState(workOrdersAtom);
   const statesMap: SetStatesMap = {
-    home: () => {},
-    assets: setAssetsList,
-    users: () => {},
-    units: () => {},
-    workOrders: () => {},
+    home: { Component: <div></div>, setList: () => {} },
+    assets: {
+      Component: <AssetsComponent></AssetsComponent>,
+      setList: setAssetsList,
+    },
+    users: { Component: <UsersComponent></UsersComponent>, setList: setUsers },
+    units: { Component: <div></div>, setList: () => {} },
+    workOrders: { Component: <div></div>, setList: setWorkOrders },
   };
 
   useEffect(() => {
-    if (selectedPage === "home") {
-      return;
-    }
-    const setState = statesMap[selectedPage];
-    setState && setState(fetchData);
+    requestData("assets");
+    requestData("users");
+    requestData("units");
+    requestData("workOrders");
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [fetchData]);
+  }, []);
 
-  function changePage(page: AvailablePages): void {
-    setSelectedPage(page);
-    if (page === "home") {
-      setFetchData([]);
-      return;
+  function requestData(page: AvailablePages): void {
+    function onSuccess(data: any): void {
+      console.log(page);
+      console.log(JSON.stringify(data));
+      const stateControl = statesMap[page];
+      stateControl && stateControl.setList(data);
     }
+
     setFetchingStatus(true);
     fetch(`https://my-json-server.typicode.com/tractian/fake-api/${page}`)
       .then((response) => response.json())
-      .then((json) => setFetchData(json))
+      .then((json) => onSuccess(json))
       .finally(() => setFetchingStatus(false));
   }
 
+  function changePage(page: AvailablePages): void {
+    setSelectedPage(page);
+  }
+
   function makeContentComponent(): JSX.Element {
-    if (selectedPage === "assets") {
-      return (
-        <div className={styles.bodyContent} data-testid="body-content-id">
-          <AssetsComponent></AssetsComponent>
-        </div>
-      );
-    }
+    const stateControl = statesMap[selectedPage];
     return (
-      <div className={styles.bodyContent} data-testid="body-content-id">
-        {fetchData.map((data) => (
-          <span key={data.id}>{JSON.stringify(data)}</span>
-        ))}
-      </div>
+      (
+        <div className={styles.bodyContent} data-testid="body-content-id">
+          {stateControl.Component}
+        </div>
+      ) ?? <div></div>
     );
   }
 

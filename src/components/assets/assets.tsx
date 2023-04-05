@@ -19,10 +19,6 @@ export default function AssetsComponent(): JSX.Element {
     window.addEventListener("click", () => setSelectedAsset(undefined));
   }, []);
 
-  useEffect(() => {
-    console.log(data);
-  }, [data]);
-
   function makeAssetPreview(asset: Asset): JSX.Element {
     function onAssetPreviewClick(event: MouseEvent<HTMLDivElement>): void {
       event.preventDefault();
