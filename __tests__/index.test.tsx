@@ -1,6 +1,7 @@
-import { RenderResult, act, render, waitFor } from "@testing-library/react";
-import Home, { AvailablePages } from "../src/app/page";
-import styles from "../src/app/page.module.css";
+import { RecoilRoot } from "recoil";
+import { RenderResult, render, waitFor } from "@testing-library/react";
+import MainApp, { AvailablePages } from "@/components/mainApp/mainApp";
+import styles from "@/components/mainApp/mainApp.module.css";
 
 type MockResponse = { json: () => []; text: () => "" };
 type MockFetch = {
@@ -15,6 +16,14 @@ function mockFetch(): Promise<MockResponse> {
   });
 }
 
+function renderComponent(): RenderResult {
+  return render(
+    <RecoilRoot>
+      <MainApp />
+    </RecoilRoot>
+  );
+}
+
 async function testPageSelection(
   context: RenderResult,
   option: AvailablePages
@@ -23,10 +32,13 @@ async function testPageSelection(
   window.fetch = jest.fn().mockImplementation(() => mockFetch());
 
   const navbarOption = getByTestId(`navbar-${option}-id`);
-  const body = getByTestId("body-id");
+  getByTestId("body-id");
   navbarOption.click();
   await waitFor(() => expect(navbarOption).toHaveClass(styles.active));
-  await waitFor(() => getByTestId("loading-content-id"));
+  if (option !== "home") {
+    await waitFor(() => getByTestId("loading-content-id"));
+  }
+
   fetchCallsToSolve.forEach((call) =>
     call.resolve({ json: () => [], text: () => "" })
   );
@@ -36,34 +48,34 @@ async function testPageSelection(
 
 describe("Home", () => {
   it("Test navbar", () => {
-    const { getByTestId } = render(<Home />);
+    const { getByTestId } = renderComponent();
     const navbar = getByTestId("navbar-id");
     expect(navbar).toBeInTheDocument();
     expect(navbar.children).toHaveLength(5);
   });
   it("Test body content", () => {
-    const { getByTestId } = render(<Home />);
+    const { getByTestId } = renderComponent();
     const body = getByTestId("body-id");
     expect(body).toBeInTheDocument();
   });
   it("Test home content selected", async () => {
-    const renderResult = render(<Home />);
+    const renderResult = renderComponent();
     await testPageSelection(renderResult, "home");
   });
   it("Test assets content selected", async () => {
-    const renderResult = render(<Home />);
+    const renderResult = renderComponent();
     await testPageSelection(renderResult, "assets");
   });
   it("Test users content selected", async () => {
-    const renderResult = render(<Home />);
+    const renderResult = renderComponent();
     await testPageSelection(renderResult, "users");
   });
   it("Test units content selected", async () => {
-    const renderResult = render(<Home />);
+    const renderResult = renderComponent();
     await testPageSelection(renderResult, "units");
   });
   it("Test workOrders content selected", async () => {
-    const renderResult = render(<Home />);
+    const renderResult = renderComponent();
     await testPageSelection(renderResult, "workOrders");
   });
 });

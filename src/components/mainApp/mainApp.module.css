@@ -30,4 +30,15 @@
 
 .body {
   flex: 1;
+  display: flex;
+}
+
+.loadingContent {
+  flex: 1;
+  width: 100%;
+}
+
+.bodyContent {
+  flex: 1;
+  width: 100%;
 }
