@@ -12,6 +12,7 @@ import {
   usersAtom,
   workOrdersAtom,
 } from "@/stores/store";
+import WorkOrdersComponent from "../workOrders/workOrders";
 
 export type AvailablePages = keyof SetStatesMap;
 type SetStatesMap = {
@@ -39,7 +40,10 @@ export default function MainApp() {
     },
     users: { Component: <UsersComponent></UsersComponent>, setList: setUsers },
     units: { Component: <div></div>, setList: () => {} },
-    workOrders: { Component: <div></div>, setList: setWorkOrders },
+    workOrders: {
+      Component: <WorkOrdersComponent></WorkOrdersComponent>,
+      setList: setWorkOrders,
+    },
   };
 
   useEffect(() => {

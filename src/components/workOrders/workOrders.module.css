@@ -1,0 +1,13 @@
+.workOrdersContainer {
+  min-height: 100%;
+  height: auto;
+}
+
+.workOrdersDetailedContainer {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: calc(100vh - 40px);
+  width: 100%;
+}

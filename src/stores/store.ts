@@ -11,7 +11,11 @@ export type AssetSpecifications = {
   power?: number | null;
   rpm?: number | null;
 };
-export type AssetStatus = "inAlert" | "inOperation" | "inDowntime";
+export type AssetStatus =
+  | "inAlert"
+  | "inOperation"
+  | "inDowntime"
+  | "inUnknown";
 
 export type Asset = {
   id: number;

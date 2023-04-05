@@ -3,7 +3,7 @@ import { RenderResult, render, waitFor } from "@testing-library/react";
 import UsersComponent from "@/components/users/users";
 import { getUsers } from "../../../__tests_data__/components/users/usersTestData";
 import { usersAtom, workOrdersAtom, User, WorkOrder } from "@/stores/store";
-import { getWorkOrders } from "../../../__tests_data__/components/workOrders/workOrdersData";
+import { getWorkOrders } from "../../../__tests_data__/components/workOrders/workOrdersTestData";
 
 const baseUsers: Array<User> = getUsers();
 const baseWorkOrders: Array<WorkOrder> = getWorkOrders();
