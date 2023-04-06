@@ -6,20 +6,23 @@ import UsersComponent from "@/components/users/users";
 import { useRecoilState } from "recoil";
 import {
   Asset,
+  Unit,
   User,
   WorkOrder,
   assetsAtom,
+  unitsAtom,
   usersAtom,
   workOrdersAtom,
 } from "@/stores/store";
 import WorkOrdersComponent from "../workOrders/workOrders";
+import UnitsComponent from "../units/units";
 
 export type AvailablePages = keyof SetStatesMap;
 type SetStatesMap = {
   home: { Component: JSX.Element; setList: () => void };
   assets: { Component: JSX.Element; setList: (value: Array<Asset>) => void };
   users: { Component: JSX.Element; setList: (value: Array<User>) => void };
-  units: { Component: JSX.Element; setList: () => void };
+  units: { Component: JSX.Element; setList: (value: Array<Unit>) => void };
   workOrders: {
     Component: JSX.Element;
     setList: (value: Array<WorkOrder>) => void;
@@ -31,6 +34,7 @@ export default function MainApp() {
   const [isFetching, setFetchingStatus] = useState<boolean>(false);
   const [, setAssetsList] = useRecoilState(assetsAtom);
   const [, setUsers] = useRecoilState(usersAtom);
+  const [, setUnits] = useRecoilState(unitsAtom);
   const [, setWorkOrders] = useRecoilState(workOrdersAtom);
   const statesMap: SetStatesMap = {
     home: { Component: <div></div>, setList: () => {} },
@@ -39,7 +43,7 @@ export default function MainApp() {
       setList: setAssetsList,
     },
     users: { Component: <UsersComponent></UsersComponent>, setList: setUsers },
-    units: { Component: <div></div>, setList: () => {} },
+    units: { Component: <UnitsComponent></UnitsComponent>, setList: setUnits },
     workOrders: {
       Component: <WorkOrdersComponent></WorkOrdersComponent>,
       setList: setWorkOrders,

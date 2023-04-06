@@ -1,11 +1,11 @@
 "use client";
-import { User, usersAtom, workOrdersAtom } from "@/stores/store";
+import { User, WorkOrder, usersAtom, workOrdersAtom } from "@/stores/store";
 import { MouseEvent, useEffect, useState } from "react";
 import { useRecoilValue } from "recoil";
 import styles from "./users.module.css";
 
 type CompleteUser = User & {
-  orders: Array<any>;
+  orders: Array<WorkOrder>;
   company: any;
 };
 
@@ -54,22 +54,18 @@ export default function UsersComponent(): JSX.Element {
       >
         <div data-testid="user-preview-name">{user.name}</div>
         <div data-testid="user-preview-email">{user.email}</div>
-        <div data-testid="user-preview-company">{user.companyId}</div>
-        <div data-testid="user-preview-orders">{user.orders.length}</div>
+        <div data-testid="user-preview-company">{`Company: ${user.companyId}`}</div>
+        <div data-testid="user-preview-orders">{`${user.orders.length} linked orders`}</div>
       </div>
     );
   }
 
   function makeUserDetailed(user: CompleteUser): JSX.Element {
     return (
-      <div
-        className={styles.userDetailed}
-        data-testid="user-detailed"
-        onClick={(event) => event.stopPropagation()}
-      >
+      <div className={styles.userDetailed} data-testid="user-detailed">
         <div data-testid="user-detailed-name">{user.name}</div>
         <div data-testid="user-detailed-email">{user.email}</div>
-        <div data-testid="user-detailed-company">{user.companyId}</div>
+        <div data-testid="user-detailed-company">{`Company: ${user.companyId}`}</div>
         <div data-testid="user-detailed-orders-quantity">
           {`${user.orders.length} orders`}
         </div>
@@ -77,16 +73,13 @@ export default function UsersComponent(): JSX.Element {
           {user.orders.map((order, index) => (
             <div key={index} data-testid="user-detailed-order">
               <div data-testid="user-detailed-order-title">
-                Order title to implement
+                {`ORDER-${order.id}`}
               </div>
               <div data-testid="user-detailed-order-status">
-                Order status to implement
+                {`Status: ${order.status}`}
               </div>
               <div data-testid="user-detailed-order-priority">
-                Order priority to implement
-              </div>
-              <div data-testid="user-detailed-order-more">
-                Order more details to implement
+                {`Priority: ${order.priority}`}
               </div>
               <br></br>
             </div>
@@ -102,6 +95,7 @@ export default function UsersComponent(): JSX.Element {
         <div
           className={styles.userDetailedContainer}
           data-testid="user-detailed-container"
+          onClick={(event) => event.stopPropagation()}
         >
           {makeUserDetailed(selectedUser)}
         </div>

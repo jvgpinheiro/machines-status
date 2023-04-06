@@ -1,0 +1,13 @@
+.unitsContainer {
+  min-height: 100%;
+  height: auto;
+}
+
+.unitDetailedContainer {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: calc(100vh - 40px);
+  width: 100%;
+}

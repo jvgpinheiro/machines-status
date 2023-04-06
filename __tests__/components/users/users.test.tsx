@@ -82,7 +82,6 @@ describe("UsersComponent", () => {
     expect(queryAllByTestId("user-detailed-order-title")).toHaveLength(0);
     expect(queryAllByTestId("user-detailed-order-status")).toHaveLength(0);
     expect(queryAllByTestId("user-detailed-order-priority")).toHaveLength(0);
-    expect(queryAllByTestId("user-detailed-order-more")).toHaveLength(0);
   });
   it("Test detailed user structure with orders", async () => {
     const users: Array<User> = baseUsers.slice(0, 1);
@@ -102,6 +101,5 @@ describe("UsersComponent", () => {
     getAllByTestId("user-detailed-order-title");
     getAllByTestId("user-detailed-order-status");
     getAllByTestId("user-detailed-order-priority");
-    getAllByTestId("user-detailed-order-more");
   });
 });

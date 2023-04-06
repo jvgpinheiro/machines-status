@@ -74,3 +74,14 @@ export const workOrdersAtom = atom({
   key: "workOrders",
   default: [] as Array<WorkOrder>,
 });
+
+export type Unit = {
+  id: number;
+  companyId: number;
+  name: string;
+};
+
+export const unitsAtom = atom({
+  key: "units",
+  default: [] as Array<Unit>,
+});
