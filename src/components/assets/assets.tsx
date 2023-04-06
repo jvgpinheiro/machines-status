@@ -2,12 +2,14 @@
 import {
   Asset,
   AssetMetrics,
+  AssetStatus,
   HealthAssetStatus,
   assetsAtom,
 } from "@/stores/store";
 import { MouseEvent, useEffect, useState } from "react";
 import { useRecoilValue } from "recoil";
 import styles from "./assets.module.css";
+import Image from "next/image";
 
 type Override<T extends object, U extends { [K in keyof T]?: any }> = Pick<
   T,
@@ -17,6 +19,7 @@ type Override<T extends object, U extends { [K in keyof T]?: any }> = Pick<
 
 type FormattedHealthStatus = Override<HealthAssetStatus, { timestamp: Date }>;
 type FormattedMetrics = Override<AssetMetrics, { lastUptimeAt: Date }>;
+type AssetStatusConfig = { text: string; class: string };
 type CompleteAsset = Override<
   Asset,
   { healthHistory: Array<FormattedHealthStatus>; metrics: FormattedMetrics }
@@ -26,6 +29,15 @@ export default function AssetsComponent(): JSX.Element {
   const assetsBaseData = useRecoilValue(assetsAtom);
   const [assets, setAssets] = useState<Array<CompleteAsset>>([]);
   const [selectedAsset, setSelectedAsset] = useState<CompleteAsset>();
+  const statusConfigMap = new Map<AssetStatus, AssetStatusConfig>([
+    ["inAlert", { text: "Alert", class: "assetPreviewStatusAlert" }],
+    ["inDowntime", { text: "Downtime", class: "assetPreviewStatusDowntime" }],
+    [
+      "inOperation",
+      { text: "Operating", class: "assetPreviewStatusOperating" },
+    ],
+    ["inUnknown", { text: "Unknown", class: "assetPreviewStatusUnknown" }],
+  ]);
 
   useEffect(() => {
     window.addEventListener("click", () => setSelectedAsset(undefined));
@@ -63,17 +75,61 @@ export default function AssetsComponent(): JSX.Element {
       setSelectedAsset(asset);
     }
 
+    function getSensors(): string {
+      const sensorsQty = asset.sensors.length;
+      return sensorsQty === 1
+        ? `${sensorsQty} sensor`
+        : `${sensorsQty} sensors`;
+    }
+
+    function getStatusConfig(): AssetStatusConfig {
+      const fallback = { text: "Unknown", class: "assetPreviewStatusUnknown" };
+      return statusConfigMap.get(asset.status) ?? fallback;
+    }
+
     return (
       <div
         className={styles.assetPreview}
         data-testid="asset-preview"
         onClick={(event) => onAssetPreviewClick(event)}
       >
-        <div data-testid="asset-preview-image">{asset.image}</div>
-        <div data-testid="asset-preview-name">{asset.name}</div>
-        <div data-testid="asset-preview-model">{asset.model}</div>
-        <div data-testid="asset-preview-healthscore">{`Health: ${asset.healthscore}%`}</div>
-        <div data-testid="asset-preview-status">{`Status: ${asset.status}`}</div>
+        <Image
+          data-testid="asset-preview-image"
+          src={asset.image}
+          alt="Asset image"
+          width={250}
+          height={187}
+        ></Image>
+        <div className={styles.assetPreviewData}>
+          <div
+            className={styles.assetPreviewName}
+            data-testid="asset-preview-name"
+          >
+            {asset.name}
+          </div>
+          <div className={styles.assetPreviewInfo}>
+            <div
+              className={styles.assetPreviewModel}
+              data-testid="asset-preview-model"
+            >
+              {asset.model}
+            </div>
+            <div
+              className={styles.assetPreviewSensors}
+              data-testid="asset-preview-sensors"
+            >
+              {getSensors()}
+            </div>
+          </div>
+          <div
+            className={styles.assetPreviewHealth}
+            data-testid="asset-preview-healthscore"
+          >{`Health: ${asset.healthscore}%`}</div>
+          <div
+            className={styles.assetPreviewStatus}
+            data-testid="asset-preview-status"
+          >{`Status: ${getStatusConfig().text}`}</div>
+        </div>
       </div>
     );
   }
@@ -85,7 +141,14 @@ export default function AssetsComponent(): JSX.Element {
         data-testid="asset-detailed"
         onClick={(event) => event.stopPropagation()}
       >
-        <div data-testid="asset-detailed-image">{asset.image}</div>
+        <Image
+          data-testid="asset-detailed-image"
+          src={asset.image}
+          alt="Asset image"
+          width={120}
+          height={120}
+          style={{ objectFit: "cover" }}
+        ></Image>
         <div data-testid="asset-detailed-name">{asset.name}</div>
         <div data-testid="asset-detailed-model">{asset.model}</div>
         <div data-testid="asset-detailed-healthscore">{`Health: ${asset.healthscore}%`}</div>

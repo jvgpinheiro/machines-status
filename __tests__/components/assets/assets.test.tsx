@@ -53,6 +53,7 @@ describe("AssetsComponent", () => {
     getByTestId("asset-preview-image");
     getByTestId("asset-preview-name");
     getByTestId("asset-preview-model");
+    getByTestId("asset-preview-sensors");
     getByTestId("asset-preview-healthscore");
     getByTestId("asset-preview-status");
   });
